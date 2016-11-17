@@ -1,6 +1,5 @@
 .idea/
 */migrations/
 *.pyc
-static/media
 .coverage
 db.sqlite3
