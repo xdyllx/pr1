@@ -1,0 +1,124 @@
+<!-- Bootstrap core CSS -->
+    {% load static from staticfiles %}
+    <link rel="stylesheet" href="{% static "css/Lib/bootstrap.min.css" %}"/>
+
+<!--题目列表-->
+<div class="container-fluid">
+    <button type="button" id="addCompletionButton" class="btn btn-info" style="float: right">添加填空题</button>
+    <table class="table table-striped" id="completionItems">
+        {%  for item in completionList %}
+            <tr class="completionItem" name="{{item.id}}">
+                <td name="{{item.id}}" class="tdCompletionName">{{ item.title }}</td>
+                <td name="{{item.id}}" class="completionEdit" align="right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success btn-sm completionEdit" data-toggle="tooltip" title="编辑" name="{{item.id}}">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm completionDel" data-toggle="tooltip" title="删除" name="{{item.id}}">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </div>
+                    </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- 添加填空题模态框 -->
+<div class="modal fade" id="completion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">添加填空题</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tr>
+                        <td align="right">标题</td>
+                        <td>
+                            <div class="form-group"><input type="text" class="form-control" id="completionTitle" placeholder="请输入标题"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">题目描述</td>
+                        <td>说明：你可以在题目描述中使用【】或[]代表填空的位置<br/>
+                            例：快排的时间复杂度是【】<br/>
+                            或：快排的时间复杂度是[]<br/>
+                            （注意：题目中要含有若干个【】或[]）
+                        </td>
+                        </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <textarea style="resize: none;height:150px;width: 500px" id="completionStem"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>答案</td>
+                        <td>
+                            <textarea style="resize: none;height:150px;width: 500px" id="completionAnswer"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="completionSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑填空题模态框 -->
+<div class="modal fade" id="editCompletion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">添加填空题</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tr>
+                        <td align="right">标题</td>
+                        <td>
+                            <div class="form-group"><input type="text" class="form-control" id="editCompletionTitle" name="completionTitle" placeholder="请输入标题"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">题目描述</td>
+                        <td>说明：你可以在题目描述中使用【】或[]代表填空的位置<br/>
+                            例：快排的时间复杂度是【】<br/>
+                            或：快排的时间复杂度是[]<br/>
+                            （注意：题目中要含有若干个【】或[]）
+                        </td>
+                        </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <textarea style="resize: none;height:150px;width: 500px" id="editCompletionStem" name="completionStem"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>答案</td>
+                        <td>
+                            <textarea style="resize: none;height:150px;width: 500px" id="editCompletionAnswer" name="completionAnswer"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" name="" id="editCompletionSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static "js/Lib/jquery.min.js" %}"></script>
+    <script src="{% static "js/Lib/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/Interviewer/completion.js" %}"></script>
+    <script src="{% static "js/Lib/getCookie.js" %}"></script>
+    <script src="{% static "js/Interviewer/confirm.js" %}"></script>

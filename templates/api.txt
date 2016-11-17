@@ -1,0 +1,37 @@
+候选人界面：
+候选人列表：candidateList
+每一项：
+name：姓名
+email：邮箱
+phone：电话
+state：面试状态
+目前是还没有显示查看面试记录
+
+添加题目：
+添加选择题：
+url: addChoice
+标题: choiceTitle
+题目描述: choiceStem
+选项: A B C D E F
+答案：choiceAnswer
+
+添加填空题：
+url: addCompletion
+标题: completionTitle
+题目描述: completionStem
+答案： completionAnswer
+
+添加编程题：
+url: addCode
+标题: codeTitle
+题目描述: codeStem
+样例输入: codeSampleInput
+样例输出: codeSampleOutput
+
+添加简答题：
+url: addEssay
+标题: essayTitle
+题目描述: essayStem
+答案: essayAnswer
+
+

@@ -1,0 +1,229 @@
+<!-- __author__ = 'Liu Yixuan' -->
+<!--候选人管理分页-->
+
+    <nav role="navigation">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse bs-example-js-navbar-collapse">
+                <span class="row"></span>
+                <ul class="navbar-nav navbar-right">
+                    <li class="dropdown" id="add">
+                        <a class="dropdown-toggle" id="drop" aria-expanded="false" aria-haspopup="true"
+                           href="#" data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> 添加候选人
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop">
+                            <li role="presentation">
+                                <a role="menuitem" data-toggle="modal" data-target="#createCandidateModal">添加候选人</a>
+                            </li>
+                            <li role="presentation">
+                                <a role="menuitem" data-toggle="modal" data-target="#addCandidateModal">批量添加候选人</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <table class="table table-hover" id="candidateItems" >
+        <thead>
+            <tr>
+                <th class="center-class">房间</th>
+                <th class="center-class">姓名</th>
+                <th class="center-class">邮箱</th>
+                <th class="center-class">手机</th>
+                <th class="center-class">面试记录</th>
+                <th class="center-class">面试状态</th>
+                <th class="center-class">操作</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% if haveCandidate == 0 %}
+            <tr><td>暂无候选人</td></tr>
+        {% else %}
+        {% for item in candidateList %}
+            {% if item.listLength != 0 %}
+                <tr name="">
+                    <td class="lead center-class" rowspan="{{ item.listLength }}" name=""><strong>{{ item.name }}</strong></td>
+
+                    {% for items in item.candList %}
+                        <td class="center-class" name="{{items.id}}">{{ items.candidateName }}</td>
+                        <td class="center-class" name="{{items.id}}">{{ items.email }}</td>
+                        <td class="center-class" name="{{items.id}}">{{ items.phoneNumber }}</td>
+                        <td class="hidden" name="{{items.id}}">{{ items.roomName }}</td>
+                        <td class="center-class" name="{{items.id}}">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm videoRecord" data-toggle="tooltip" title="视频录像" name="{{items.id}}"><span class="glyphicon glyphicon-film"></span></button>
+                                <button type="button" class="btn btn-default btn-sm whiteBoardRecord" data-toggle="tooltip" title="白板记录" name="{{items.id}}"><span class="glyphicon glyphicon-edit"></span></button>
+                                <button type="button" class="btn btn-default btn-sm codeEditRecord" data-toggle="tooltip" title="代码协同编辑记录" name="{{items.id}}"><span class="glyphicon glyphicon-file"></span></button>
+                                <button type="button" class="btn btn-default btn-sm chatRecord" data-toggle="tooltip" title="聊天室记录" name="{{items.id}}"><span class="glyphicon glyphicon-comment"></span></button>
+                                <button type="button" class="btn btn-default btn-sm interviewReport" data-toggle="tooltip" title="面试报告" name="{{items.id}}"><span class="glyphicon glyphicon-list-alt"></span></button>
+                            </div>
+                        </td>
+                        <td class="center-class" name="{{items.id}}">
+                            {% if items.state == 0 %}
+                                <span>未开始面试</span>
+                            {% elif items.state == 1 %}
+                                <span style="color: green">已通过</span>
+                            {% else %}
+                                <span style="color: red">未通过</span>
+                            {% endif %}
+                        </td>
+                        <td class="center-class" name="{{items.id}}">
+                            <div class="btn-group">
+                                    <button type="button" class="btn btn-success btn-sm editCandidateInfo" data-toggle="tooltip" title="编辑" name="{{items.id}}"><span class="glyphicon glyphicon-pencil"></span></button>
+                                    <button type="button" class="btn btn-danger btn-sm deleteCandidate" data-toggle="tooltip" title="删除" name="{{items.id}}"><span class="glyphicon glyphicon-trash"></span></button>
+                                    <button type="button" class="btn btn-info btn-sm sendEmailToCandidate" data-toggle="tooltip" title="发送邮件" name="{{items.id}}"><span class="glyphicon glyphicon-envelope"></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        </tbody>
+     </table>
+{% endif %}
+
+<!--添加候选人模态框-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="createCandidateModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"><strong>添加候选人</strong></h4>
+            </div>
+            <div class="modal-body" id="createCandidateModalBody">
+                    <div class="form-group">
+                        <label for="candidateName">候选人姓名</label>
+                        <input type="text" class="form-control" id="addCandidate_nameInput" placeholder="请输入候选人姓名（必填）">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">候选人邮箱</label>
+                        <input type="email" class="form-control" id="addCandidate_emailInput" placeholder="请输入候选人邮箱（必填）">
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">候选人手机</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">+86</span>
+                            <input type="text" class="form-control" id="addCandidate_phoneNumberInput" placeholder="请输入候选人手机（必填）">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="myRoom">面试房间</label>
+                        <select class="form-control" id="myRoom">
+                            {% for item in roomList %}
+                                <option>{{ item.roomname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+                <button type="button" class="btn btn-primary" name="" id="addCandidateSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--批量添加候选人模态框-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="addCandidateModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="loading hidden"></div>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"><strong>导入候选人列表</strong></h4>
+            </div>
+            <div class="modal-body">
+                <p>请下载并编辑
+                    <a href="/ink/downloadExampleExcel/">example.xlsx</a>
+                    文件，按照其中的格式填入候选人信息后上传，并点击“导入”即可。
+                    上传文件名的后缀为“.xls 或 .xlsx”，文件大小不超过500KB。
+                </p>
+                <input type="file" name="excelfile" id="excelfile"  accept=".xls, .xlsx" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+                <button type="button" class="btn btn-primary" name="" id="addBatchCandidateSave">导入</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--编辑候选人信息模态框-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="editCandidateModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="loading hidden"></div>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"><strong>候选人信息</strong></h4>
+            </div>
+            <div class="modal-body" id="editCandidateModalBody">
+                    <div class="form-group">
+                        <label for="candidateName">姓名</label>
+                        <input type="text" class="form-control" id="editCandidate_nameInput" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="interviewerName">邮箱</label>
+                        <input type="email" class="form-control" id="editCandidate_emailInput" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="interviewerEmail">手机</label>
+                        <input type="text" class="form-control" id="editCandidate_phoneNumberInput" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="interviewName">房间</label>
+                        <select class="form-control" id="interviewName">
+                            {% for item in roomList %}
+                                <option>{{ item.roomname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+                <button type="button" class="btn btn-primary" name="" id="editCandidateSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--发送邮件给候选人信息编辑模态框-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="sendEmailToCandidateModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="loading hidden"></div>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"><strong>向候选人发送邀请邮件</strong></h4>
+            </div>
+            <div class="modal-body" id="sendEmailToCandidateModalBody">
+                    <div class="form-group">
+                        <label for="candidateName">候选人姓名</label>
+                        <input type="text" class="form-control" id="sendEmail_name" value="" placeholder="" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="interviewerEmail">候选人邮箱</label>
+                        <input type="email" class="form-control" id="sendEmail_candidateEmail" value="" placeholder="" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailContext">邮件内容</label>
+                        <input type="text" class="form-control" id="sendEmailToCandidate_emailContext" value="" placeholder="">
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+                <button type="button" class="btn btn-primary" name="" id="sendEmailToCandidateSave">发送</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% load static from staticfiles %}
+<script src="{% static "js/HR/candidateManage.js" %}"></script>
+<script src="{% static "js/Lib/ajaxfileupload.js" %}"></script>

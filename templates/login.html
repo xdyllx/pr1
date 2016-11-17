@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login and Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login and Registration Form with HTML5 and CSS3" />
+    <meta name="keywords" content="html5, css3, form, switch, animation, :target, pseudo-class" />
+    <meta name="author" content="Codrops" />
+
+    {% load static from staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/Login/demo.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/Login/style.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/Login/animate-custom.css" %}"/>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>H R 面试管理系统 <span>登录与注册界面</span></h1>
+        </header>
+        <section>
+            <div id="container_demo" >
+                <a class="hiddenanchor" id="toregister"></a>
+                <a class="hiddenanchor" id="tologin"></a>
+                <div id="wrapper">
+                    <div id="login" class="animate form">
+                        <form  action="{% url 'login'  %}" autocomplete="on" method="post">
+                            {% csrf_token %}
+                            <h1>登录</h1>
+                            <p>
+                                <label for="username" class="uname" data-icon="u" > 电子邮箱</label>
+                                <input id="username" name="username" required="required" type="text" placeholder="mymail@mail.com" onfocus="deleteMessage()"/>
+                            </p>
+                            <p>
+                                <label for="password" class="youpasswd" data-icon="p">密码</label>
+                                <input id="password" name="password" required="required" type="password" placeholder="eg. X8df!90EO" onfocus="deleteMessage()"/>
+                            </p>
+                            <span id="tips" style="color: red">{{ message }}</span>
+                            <p class="login button" id="loginButton">
+
+                                <input type="submit" value="登录" />
+                            </p>
+                            <p class="change_link">尚未注册？
+                                <a href="#toregister" class="to_register">注册</a>
+                            </p>
+                        </form>
+                    </div>
+
+                    <div id="register" class="animate form">
+                            <h1>注册</h1>
+                            <p>
+                                <label for="usernamesignup" class="uname" data-icon="u">姓名</label>
+                                <input id="namesignup" name="namesignup" required="required" type="text" placeholder="" />
+                            </p>
+                            <p>
+                                <label for="emailsignup" class="youmail" data-icon="e" > 电子邮箱</label>
+                                <input id="emailsignup" name="emailsignup" required="required" type="email" placeholder=""/>
+                            </p>
+                            <p>
+                                <label for="companysignup" class="youmail" data-icon="e" > 所属机构</label>
+                                <input id="companysignup" name="companysignup" required="required" type="test" placeholder=""/>
+                            </p>
+
+                            <p>
+                                <label for="passwordsignup" class="youpasswd" data-icon="p">请设置密码 </label>
+                                <input id="passwordsignup" name="passwordsignup" required="required" type="password" placeholder=""/>
+                            </p>
+                            <p>
+                                <label for="passwordsignup_confirm" class="youpasswd" data-icon="p">请确认密码 </label>
+                                <input id="passwordsignup_confirm" name="passwordsignup_confirm" required="required" type="password" placeholder=""/>
+                            </p>
+                            <p>
+                                <label for="verificationInput"> 验证码</label>
+
+                                <input id="verificationInput" name="identifying" required="required"  type="test" placeholder=""/>
+                                <span><img id="verificationImage" src="/static/media/verification/{{ verificationNum }}.jpg"/>
+                                <a href="javascript:tu_change()">看不清，换一张</a></span>
+
+                            </p>
+                            <p class="signin button" id="registerButton">
+                                <input type="submit" value="注册"/>
+                            </p>
+
+                            <p class="change_link">已经注册？
+                                <a href="#tologin" class="to_register"> 登录</a>
+                            </p>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="{% static "js/Lib/jquery.min.js" %}"></script>
+    <script src="{% static "js/Lib/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/Lib/toastr.min.js" %}"></script>
+    <script src="{% static "js/HR/functions.js" %}"></script>
+    <script src="{% static "js/HR/login.js" %}"></script>
+    <script src="{% static "js/Lib/confirm.js" %}"></script>
+    <script>
+        function tu_change() {
+            var number = Math.floor(Math.random()*10);
+            var str = '/static/media/verification/'+number.toString()+'.jpg';
+            //alert(str);
+            $("#verificationImage").attr('src', str);
+        }
+    </script>
+
+</body>
+</html>
+
+

@@ -1,0 +1,122 @@
+<!-- Bootstrap core CSS -->
+    {% load static from staticfiles %}
+    <link rel="stylesheet" href="{% static "css/Lib/bootstrap.min.css" %}"/>
+
+<!--题目列表-->
+<div class="container-fluid">
+    <button type="button" id="addCodeButton" class="btn btn-info" style="float: right">添加编程题</button>
+    <table class="table table-striped" id="codeItems">
+        {%  for item in codeList %}
+            <tr class="codeItem" name="{{item.id}}">
+                <td name="{{item.id}}" class="tdCodeName">{{ item.title }}</td>
+                <td name="{{item.id}}" class="codeEdit" align="right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success btn-sm codeEdit" data-toggle="tooltip" title="编辑" name="{{item.id}}">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm codeDel" data-toggle="tooltip" title="删除" name="{{item.id}}">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- 添加编程题模态框 -->
+<div class="modal fade" id="code" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">添加编程题</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tr>
+                        <td align="right">标题</td>
+                        <td>
+                            <div class="form-group"><input type="text" class="form-control" id="codeTitle" name="codeTitle" placeholder="请输入标题"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">题目描述</td>
+                        <td>
+                            <textarea style="resize: none;height:150px;width: 500px" id="codeStem"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">样例输入</td>
+                        <td>
+                            <textarea class=""  style="resize: none;height:150px;width: 500px" id="codeSampleInput" name="codeSampleInput"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">样例输出</td>
+                        <td>
+                            <textarea class=""  style="resize: none;height:150px;width: 500px" id="codeSampleOutput"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="codeSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑编程题模态框 -->
+<div class="modal fade" id="editCode" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">添加编程题</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tr>
+                        <td align="right">标题</td>
+                        <td>
+                            <div class="form-group"><input type="text" class="form-control" id="editCodeTitle" name="codeTitle" placeholder="请输入标题"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">题目描述</td>
+                        <td>
+                            <textarea style="resize: none;height:150px;width: 500px" id="editCodeStem"  name="codeStem"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">样例输入</td>
+                        <td>
+                            <textarea class=""  style="resize: none;height:150px;width: 500px" id="editCodeSampleInput" name="codeSampleInput"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">样例输出</td>
+                        <td>
+                            <textarea class=""  style="resize: none;height:150px;width: 500px" id="editCodeSampleOutput" name="codeSampleOutput"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="editCodeSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static "js/Lib/jquery.min.js" %}"></script>
+    <script src="{% static "js/Lib/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/Interviewer/code.js" %}"></script>
+    <script src="{% static "js/Lib/getCookie.js" %}"></script>
+    <script src="{% static "js/Interviewer/confirm.js" %}"></script>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap core CSS -->
+    {% load static from staticfiles %}
+    <link rel="stylesheet" href="{% static "css/Lib/bootstrap.min.css" %}"/>
+    <link rel="stylesheet" href="{% static "css/HR/HRManage.css" %}"/>
+    <link rel="stylesheet" href="{% static "css/Lib/toastr.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/Simditor/simditor.css" %}" />
+    <title>面试官管理房间</title>
+</head>
+
+<body style="background-color:#f7f7f7;">
+    <!--导航条-->
+    <header class="navbar navbar-inverse navbar-static-top" role="banner">
+        <div class="container">
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <h4 class="pull-left" style="font-size: 24px;">面试官管理系统</h4>
+            </nav>
+        </div>
+    </header>
+
+    <input id="roomId" hidden="hidden">
+
+    <div class="container">
+        <table class="struct_tbl">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="info_tree">
+                            <div style="width: 180px;">
+                                <h4><span class="glyphicon glyphicon-list" style="width: 18px;"></span>&nbsp;题目管理</h4>
+                                <ul class='it_list  nav'>
+                                    <li id="choiceManage"><a><span>选择题管理</span></a></li>
+                                    <li id="completionManage"><a><span>填空题管理</span></a></li>
+                                    <li id="essayManage"><a><span>简答题管理</span></a></li>
+                                    <li id="codeManage"><a><span>编程题管理</span></a></li>
+                                </ul>
+                                <h4 id="intervieweeManage"><a><span class="glyphicon glyphicon-user"></span>候选人管理</a></h4>
+                                <h4 id="enterRoom"><a><span class="glyphicon glyphicon-chevron-right"></span>进入房间</a></h4>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div id="panel_right" class="col">
+                            <div  id="rightPanel" class="col" style="background: left no-repeat ; height: 80px; width: 100%; border-radius: 6px;">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bs-docs-footer">
+        prj3-CandyInk
+    </footer>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static "js/Lib/jquery.min.js" %}"></script>
+    <script src="{% static "js/Lib/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/Interviewer/interviewerManage.js" %}"></script>
+    <script src="{% static "js/Lib/toastr.min.js" %}"></script>
+    <script src="{% static "js/Lib/initToastr.js" %}"></script>
+    <script src="{% static "js/Interviewer/Simditor/module.js" %}"></script>
+    <script src="{% static "js/Interviewer/Simditor/hotkeys.js" %}"></script>
+    <script src="{% static "js/Interviewer/Simditor/uploader.js" %}"></script>
+    <script src="{% static "js/Interviewer/Simditor/simditor.js" %}"></script>
+</body>
+</html>

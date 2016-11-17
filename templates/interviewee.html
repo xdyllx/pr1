@@ -1,0 +1,61 @@
+<!-- Bootstrap core CSS -->
+    {% load static from staticfiles %}
+    <link rel="stylesheet" href="{% static "css/Lib/bootstrap.min.css" %}"/>
+
+
+<!--候选人列表-->
+<div role="tabpanel" class="container-fluid tab-pane" id="candidate">
+    <!--候选人列表-->
+    <div class="container-fluid">
+        <table class="table table-striped" id="candidateItems">
+            <tr>
+                <td>姓名</td>
+                <td>邮箱</td>
+                <td>手机</td>
+                <td>面试记录</td>
+                <td>面试状态</td>
+            </tr>
+            {%  for item in candidateList %}
+                <tr class="candidateItem" name="{{item.id}}">
+                    <td name="{{item.id}}">{{ item.name }}</td>
+                    <td name="{{item.id}}">{{  item.email  }}</td>
+                    <td name="{{item.id}}">{{  item.phone  }}</td>
+                    <td name="{{item.id}}">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default videoRecord" data-toggle="tooltip" title="视频录像" name="{{item.id}}">
+                            <span class="glyphicon glyphicon-film"></span>
+                        </button>
+                        <button type="button" class="btn btn-default whiteBoardRecord" data-toggle="tooltip" title="白板记录" name="{{item.id}}">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                        <button type="button" class="btn btn-default codeEditRecord" data-toggle="tooltip" title="代码协同编辑记录" name="{{item.id}}">
+                            <span class="glyphicon glyphicon-file"></span>
+                        </button>
+                        <button type="button" class="btn btn-default chatRecord" data-toggle="tooltip" title="聊天室记录" name="{{item.id}}">
+                            <span class="glyphicon glyphicon-comment"></span>
+                        </button>
+                        <button type="button" class="btn btn-default interviewReport" data-toggle="tooltip" title="面试报告" name="{{item.id}}">
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                        </button>
+                    </div>
+                    </td>
+                    <td name="{{item.id}}">
+                        {% if item.state == 0 %}未开始
+                        {% else %}
+                        {% if item.state == 1 %}已通过
+                        {% else %}未通过
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static "js/Lib/jquery.min.js" %}"></script>
+    <script src="{% static "js/Lib/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/Interviewer/interviewee.js" %}"></script>
+<script src="{% static "js/Lib/getCookie.js" %}"></script>

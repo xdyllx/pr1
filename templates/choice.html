@@ -1,0 +1,148 @@
+<!-- Bootstrap core CSS -->
+    {% load static from staticfiles %}
+    <link rel="stylesheet" href="{% static "css/Lib/bootstrap.min.css" %}"/>
+
+<!--题目列表-->
+<input id="editChoiceNum" hidden="hidden">
+<div class="container-fluid">
+<button type="button" id="addChoiceButton" class="btn btn-info" style="float: right">添加选择题</button>
+    <table class="table table-striped" id="choiceItems">
+        {%  for item in choiceList %}
+            <tr class="choiceItem" name="{{item.id}}">
+                <td name="{{item.id}}" class="tdChoiceName">{{ item.title }}</td>
+                <td name="{{item.id}}" class="choiceEdit" align="right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success btn-sm choiceEdit" data-toggle="tooltip" title="编辑" name="{{item.id}}">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm choiceDel" data-toggle="tooltip" title="删除" name="{{item.id}}">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- 添加选择题模态框 -->
+<div class="modal fade" id="choice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">添加选择题</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table" border=0>
+                    <tr>
+                        <td align="right">标题</td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="choiceTitle" placeholder="请输入标题">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">题目描述</td>
+                    <td>
+                        <textarea style="resize: none;height:150px;width: 500px" id="choiceStem"></textarea>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td align="right">选项</td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input type="checkbox" id="addOptionCheckbox">
+                                </span>
+                                <input type="text" class="form-control" id="addOptionText" style="z-index: 0">
+                                <span class="input-group-addon" id="addOptionButton">
+                                   添加
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <div id="optionsDiv"></div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="choiceSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 编辑选择题模态框 -->
+<div class="modal fade" id="editChoice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">编辑选择题</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table" border=0>
+                    <tr>
+                        <td align="right">标题</td>
+                        <td>
+                            <div class="form-group"><input type="text" class="form-control" id="editChoiceTitle" name="choiceTitle" placeholder="请输入标题"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">题目描述</td>
+                    <td>
+                        <textarea style="resize: none;height:150px;width: 500px" id="editChoiceStem" name="choiceStem"></textarea>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td align="right">选项</td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input type="checkbox" id="editOptionCheckbox">
+                                </span>
+                                <input type="text" class="form-control" id="editOptionText" style="z-index: 0">
+                                <span class="input-group-addon" id="editOptionButton">
+                                   添加
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <div id="editOptionsDiv"></div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" name="" id="editChoiceSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static "js/Lib/jquery.min.js" %}"></script>
+    <script src="{% static "js/Lib/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/Interviewer/choice.js" %}"></script>
+    <script src="{% static "js/Lib/getCookie.js" %}"></script>
+    <script src="{% static "js/Interviewer/confirm.js" %}"></script>
+    <script src="{% static "js/Interviewer/Simditor/module.js" %}"></script>
+    <script src="{% static "js/Interviewer/Simditor/hotkeys.js" %}"></script>
+    <script src="{% static "js/Interviewer/Simditor/uploader.js" %}"></script>
+    <script src="{% static "js/Interviewer/Simditor/simditor.js" %}"></script>
