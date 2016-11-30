@@ -2,7 +2,7 @@ $(document).ready(function() {
      //下载视频录像
     $("button.videoRecord").click(function () {
         var interviewerId = $(this).attr('name');
-        $.get("/ink/checkVideoFilepath/?room="+$("#roomId").val(),{'intervieweeId': $(this).attr('name')}, function(ret) {
+        $.get("/ink/checkVideoFilepath/",{'intervieweeId': $(this).attr('name')}, function(ret) {
             if(ret.status=="success")
             {
                 download('/ink/downloadVideo/', interviewerId);
@@ -15,7 +15,7 @@ $(document).ready(function() {
     //下载白板记录
     $("button.whiteBoardRecord").click(function () {
         var interviewerId = $(this).attr('name');
-        $.get("/ink/checkWhiteboardFilepath/?room="+$("#roomId").val(),{'intervieweeId': $(this).attr('name')}, function(ret) {
+        $.get("/ink/checkWhiteboardFilepath/",{'intervieweeId': $(this).attr('name')}, function(ret) {
             if(ret.status=="success")
             {
                 download('/ink/downloadWhiteboard/', interviewerId);
@@ -28,7 +28,7 @@ $(document).ready(function() {
     // 下载代码协同编辑记录
     $("button.codeEditRecord").click(function () {
         var interviewerId = $(this).attr('name');
-        $.get("/ink/checkFinalcodeFilepath/?room="+$("#roomId").val(),{'intervieweeId': $(this).attr('name')}, function(ret) {
+        $.get("/ink/checkFinalcodeFilepath/",{'intervieweeId': $(this).attr('name')}, function(ret) {
             if(ret.status=="success")
             {
                 download('/ink/downloadFinalcode/', interviewerId);
@@ -41,7 +41,7 @@ $(document).ready(function() {
     // 下载聊天室记录
     $("button.chatRecord").click(function () {
         var interviewerId = $(this).attr('name');
-        $.get("/ink/checkChatFilepath/?room="+$("#roomId").val(),{'intervieweeId': $(this).attr('name')}, function(ret) {
+        $.get("/ink/checkChatFilepath/",{'intervieweeId': $(this).attr('name')}, function(ret) {
             if(ret.status=="success")
             {
                 download('/ink/downloadChat/', interviewerId);
@@ -54,7 +54,7 @@ $(document).ready(function() {
     // 下载面试报告
     $("button.interviewReport").click(function () {
         var interviewerId = $(this).attr('name');
-        $.get("/ink/checkReportFilepath/?room="+$("#roomId").val(),{'intervieweeId': $(this).attr('name')}, function(ret) {
+        $.get("/ink/checkReportFilepath/",{'intervieweeId': $(this).attr('name')}, function(ret) {
             if(ret.status=="success")
             {
                 download('/ink/downloadReport/', interviewerId);

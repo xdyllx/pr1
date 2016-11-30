@@ -48,15 +48,24 @@ function getCookie(c_name) {
     return "";
 }
 
-function download(url) {
+function download(url, intervieweeId) {
     var form = $("<form>");   //定义一个form表单
     form.attr('style', 'display:none');   //在form表单中添加查询参数
     form.attr('target', '');
     form.attr('method', 'get');
     form.attr('action', url);
+
+    var input1=$("<input>");
+    input1.attr("type", "hidden");
+    input1.attr("name", "intervieweeId");
+    input1.attr("value", intervieweeId);
+
+    form.append(input1);
     $('body').append(form);  //将表单放置在web中
+
     form.submit();
 }
+
 
 
 

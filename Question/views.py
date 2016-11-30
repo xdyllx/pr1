@@ -13,7 +13,8 @@ from django.conf import settings
 import time
 import re
 import os
-
+import sys
+reload(sys)
 
 TEMPLATE_DIR = BASE_DIR + "/templates/"
 FILE_DIR = BASE_DIR + "/static/media/file/"
@@ -83,7 +84,7 @@ class APIError(Exception):
     def __init__(self, APIType, message=u""):
         self.errorInfo = APIType
         if message != u"":
-            self.errorInfo += " ：" + message
+            self.errorInfo += ":" + message
 
 
 # 网址中房间号参数非法
@@ -590,7 +591,11 @@ def innerAddCompletion(title, stem, answer, roomId):
             raise Error(ADD, COMPLETION, NO_SUCH_ROOM_ID)
         if checkReduplicativeTitleInAdd('completion', title):
             raise Error(ADD, COMPLETION, REDUPLICATIVE_TITLE)
-        if (not('【】'.decode('utf-8') in stem)) and (not('[]' in stem)):
+        zhPattern = re.compile(u'[\u3010][\u3011]')
+        contents = stem
+        match = zhPattern.search(contents)
+        if not match and (not('[]' in stem)):
+#        if (not('【】'.decode('utf-8') in stem)) and (not('[]' in stem)):
             raise Error(ADD, COMPLETION, NO_BLANKS)
         if len(title) >= TITLE_MAXLENGTH:
             raise Error(ADD, COMPLETION, TITLE_OVERFLOW)
@@ -860,7 +865,11 @@ def innerEditCompletion(title, stem, answer, editId, roomId):
             raise Error(EDIT, COMPLETION, NO_SUCH_ROOM_ID)
         if checkReduplicativeTitleInEdit('completion', title, theId):
             raise Error(EDIT, COMPLETION, REDUPLICATIVE_TITLE)
-        if (not('【】'.decode('utf-8') in stem)) and (not('[]' in stem)):
+	zhPattern = re.compile(u'[\u3010][\u3011]')
+        contents = stem
+        match = zhPattern.search(contents)
+        if not match and (not('[]' in stem)):
+	#if (not('【】'.decode('utf-8') in stem)) and (not('[]' in stem)):
             raise Error(EDIT, COMPLETION, NO_BLANKS)
         if len(title) >= TITLE_MAXLENGTH:
             raise Error(EDIT, COMPLETION, TITLE_OVERFLOW)
@@ -1237,27 +1246,32 @@ def fileUpload(request):
 
 
 # 面试结束后，面试房间传给我们候选人的面试状态（1：通过，2：未通过）
-@csrf_exempt
-def getStatusAfterInterview(request):
-    candidateId = int(request.POST['candidate'])
-    status = int(request.POST['status'])
-    theCandidate = Candidate.objects.filter(id=candidateId)
-    theCandidate[0].state = status
-    theCandidate[0].save()
 
+def getStatusAfterInterview(request):
+    candidateId = int(request.GET['candidate'])
+    status = int(request.GET['status'])
+    cs = Candidate.objects.all()
+    for item in cs:
+        if item.id == candidateId:
+            item.state = status
+            item.save()
+    return HttpResponse('success')
 
 # 面试结束后，面试房间传给我们候选人5个面试文件的路径
-@csrf_exempt
-def getFilepathAfterInterview(request):
-    candidateId = int(request.POST['candidate'])
-    theCandidate = Candidate.objects.filter(id=candidateId)
-    theCandidate[0].videopath = request.POST['videopath']
-    theCandidate[0].reportpath = request.POST['reportpath']
-    theCandidate[0].codepath = request.POST['codepath']
-    theCandidate[0].whiteboardpath = request.POST['whiteboardpath']
-    theCandidate[0].chatpath = request.POST['chatpath']
-    theCandidate[0].save()
 
+def getFilepathAfterInterview(request):
+    candidateId = int(request.GET['candidate'])
+    cs = Candidate.objects.all()
+    for item in cs:
+        if item.id == candidateId:
+            item.videopath = request.GET['videopath']
+            item.reportpath = request.GET['reportpath']
+            item.codepath = request.GET['codepath']
+            item.whiteboardpath = request.GET['whiteboardpath']
+            item.chatpath = request.GET['chatpath']
+            item.save()
+
+    return HttpResponse('success')
 
 def checkVideoFilepath(request):
     candidateId = int(request.GET['intervieweeId'])
@@ -1365,14 +1379,17 @@ def checkChatFilepath(request):
     candidateId = int(request.GET['intervieweeId'])
     dict = {}
     candidate = Candidate.objects.filter(id=candidateId)
-    filepath = candidate[0].chatpath
-    if os.path.exists(filepath):
+    status = candidate[0].state
+    if status != 0:
         dict['status'] = "success"
         dict['message'] = u"聊天记录已生成！"
     else:
         dict['status'] = "fail"
         dict['message'] = u"聊天记录尚未生成！"
+    print candidateId
+    print candidate[0].chatpath
     return HttpResponse(json.dumps(dict), content_type="application/json")
+
 
 
 def downloadChat(request):

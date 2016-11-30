@@ -292,7 +292,7 @@ def getCandidateURL(request):
         if str(candidate.id) == candidateId:
             roomId = candidate.interview.id
             break
-    url = 'http://' + ALLOWED_HOSTS[0] + ':8000/ink/candidate?room=' + \
+    url = 'http://' + ALLOWED_HOSTS[0] + ':3000/candidate?room=' + \
          getEncodedRoomID(roomId) + "&id=" + candidateId
     return HttpResponse(url)
 
