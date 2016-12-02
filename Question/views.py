@@ -15,8 +15,8 @@ import re
 import os
 
 
-TEMPLATE_DIR = BASE_DIR + "\\templates\\"
-FILE_DIR = BASE_DIR + "\\static\\media\\file\\"
+TEMPLATE_DIR = BASE_DIR + "/templates/"
+FILE_DIR = BASE_DIR + "/static/media/file/"
 
 
 # （对题目的）操作名
