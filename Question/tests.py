@@ -1192,6 +1192,18 @@ class SmallFunctionsTestCase(TestCase):
             email="yd-chen14@mails.tsinghua.edu.cn",
             interview=interview
         )
+        Candidate.objects.create(
+            name="cyd",
+            email="orangexyx@qq.com",
+            phoneNumber="13111112222",
+            interview=interview,
+            state=0,
+            videopath="/video",
+            reportpath="/report",
+            codepath="/code",
+            whiteboardpath="/wb",
+            chatpath="/chat"
+        )
         Choice.objects.create(
             title="sodagreen",
             stem="which ones do you like?",
@@ -1307,4 +1319,251 @@ class SmallFunctionsTestCase(TestCase):
         self.assertEqual(checkIllegalEncodedRoomID(legalEncodedRoomId), False)
         self.assertEqual(checkIllegalEncodedRoomID(illegalEncodedRoomId1), True)
         self.assertEqual(checkIllegalEncodedRoomID(illegalEncodedRoomId2), True)
+
+
+    # Add in Nov. 30th
+    def test_show_interviewee(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+
+        response1 = self.client.post('/ink/intervieweeManage/?room=' + getEncodedRoomID(roomId))
+        self.assertEqual(response1.status_code, 200)
+
+    def test_get_question_jsend(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+
+        response1 = self.client.post('/ink/problems/?room=' + getEncodedRoomID(roomId))
+        self.assertEqual(response1.status_code, 200)
+
+    def test_get_choicelist_in_jsend(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+
+        choiceRet = getChoiceListInJsend(roomId, 1)
+        self.assertEqual(choiceRet['mark'], 2)
+        self.assertEqual(choiceRet['choiceList'][0]['type'], "choice")
+
+    def test_get_completionlist_in_jsend(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+
+        completionRet = getCompletionListInJsend(roomId, 1)
+        self.assertEqual(completionRet['mark'], 2)
+        self.assertEqual(completionRet['completionList'][0]['type'], "completion")
+
+    def test_get_essaylist_in_jsend(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+
+        essayRet = getEssayListInJsend(roomId, 1)
+        self.assertEqual(essayRet['mark'], 2)
+        self.assertEqual(essayRet['essayList'][0]['type'], "essay")
+
+    def test_get_codelist_in_jsend(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+
+        codeRet = getCodeListInJsend(roomId, 1)
+        self.assertEqual(codeRet['mark'], 3)
+        self.assertEqual(codeRet['codeList'][0]['type'], "code")
+
+    def test_get_candidate_jsend(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+
+        response1 = self.client.post('/ink/getCandidate/?room=' + getEncodedRoomID(roomId))
+        self.assertEqual(response1.status_code, 200)
+
+    def test_get_room_jsend(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+
+        response1 = self.client.post('/ink/getRoomId/?room=' + getEncodedRoomID(roomId))
+        self.assertEqual(response1.status_code, 200)
+
+    def test_show_questions(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+
+        response1 = self.client.post('/ink/interviewerManage/?room=' + getEncodedRoomID(roomId))
+        self.assertEqual(response1.status_code, 200)
+
+    def test_get_choice_by_id(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+        choices = Choice.objects.all()
+        theId = str(choices[0].id)
+
+        response1 = self.client.post('/ink/getChoiceById/?room=' + getEncodedRoomID(roomId),
+                                     {'choiceId': "choice_" + theId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_get_completion_by_id(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+        completions = Completion.objects.all()
+        theId = str(completions[0].id)
+
+        response1 = self.client.get('/ink/getCompletionById/?room=' + getEncodedRoomID(roomId),
+                                    {'completionId': "completion_" + theId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_get_essay_by_id(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+        essays = Essay.objects.all()
+        theId = str(essays[0].id)
+
+        response1 = self.client.get('/ink/getEssayById/?room=' + getEncodedRoomID(roomId),
+                                    {'essayId': "essay_" + theId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_get_code_by_id(self):
+
+        room = Interview.objects.filter(name="unittest")
+        roomId = room[0].id
+        codes = Code.objects.all()
+        theId = str(codes[0].id)
+
+        response1 = self.client.get('/ink/getCodeById/?room=' + getEncodedRoomID(roomId),
+                                    {'codeId': "code_" + theId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_file_upload(self):
+
+        response1 = self.client.get('/ink/fileUpload/', {'upload_file': "1.jpg"})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_get_status_after_interview(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/getStatusAfterInterview/',
+                                    {'candidate': canId, 'status': '2'})
+        self.assertEqual(response1.status_code, 200)
+        self.assertEqual(candidates[0].state, 2)
+
+    def test_get_filepath_after_interview(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/getFilepathAfterInterview/',
+                                    {'candidate': canId,
+                                     'videopath': "/v1.wav",
+                                     'reportpath': "/r1.txt",
+                                     'codepath': "/c1.txt",
+                                     'whiteboardpath': "/wb1.txt",
+                                     'chatpath': "/ch1.txt"})
+        self.assertEqual(response1.status_code, 200)
+        self.assertEqual(candidates[0].chatpath, "/ch1.txt")
+
+    def test_check_video_filepath(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/checkVideoFilepath/',
+                                    {'intervieweeId': canId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_download_video(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/downloadVideo/',
+                                    {'intervieweeId': canId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_check_report_filepath(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/checkReportFilepath/',
+                                    {'intervieweeId': canId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_download_report(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/downloadReport/',
+                                    {'intervieweeId': canId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_check_finalcode_filepath(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/checkFinalcodeFilepath/',
+                                    {'intervieweeId': canId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_download_finalcode(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/downloadFinalcode/',
+                                    {'intervieweeId': canId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_check_whiteboard_filepath(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/checkWhiteboardFilepath/',
+                                    {'intervieweeId': canId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_download_whiteboard(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/downloadWhiteboard/',
+                                    {'intervieweeId': canId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_check_chat_filepath(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/checkChatFilepath/',
+                                    {'intervieweeId': canId})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_download_chat(self):
+
+        candidates = Candidate.objects.all()
+        canId = str(candidates[0].id)
+
+        response1 = self.client.get('/ink/downloadChat/',
+                                    {'intervieweeId': canId})
+        self.assertEqual(response1.status_code, 200)
+
+
+
+
+
 
