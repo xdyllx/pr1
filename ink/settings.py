@@ -25,7 +25,7 @@ SECRET_KEY = '4m@wo_xgm4$+&eut_7@a*sry5tf3)ugg0370jlgk^%(yny7p!^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['52.175.23.37', 'tttest5801.cloudapp.net']
+ALLOWED_HOSTS = ['52.175.23.37', 'tttest5801.cloudapp.net', 'candyink.xyz']
 
 
 # Application definition
