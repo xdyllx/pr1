@@ -1240,7 +1240,7 @@ def fileUpload(request):
         open(filePath, 'wb+').write(files.read())  # 上传文件
         upload_info = {
             "success": True,
-            'file_path': settings.MEDIA_URL + "richTextImg/" + filename}
+            'file_path': "/home/locke/ink/pr1/static/media/richTextImg/" + filename}
         upload_info = json.dumps(upload_info)  # 得到JSON格式的返回值
     return HttpResponse(upload_info, content_type="application/json")
 

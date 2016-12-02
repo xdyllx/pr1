@@ -13,9 +13,8 @@ import re
 import os
 import json
 TEMPLATE_DIR = BASE_DIR + '/templates/'
+URL = 'candyink.jinzihao.me'
 
-
-# socket.getaddrinfo('127.0.0.1', 8080)
 emailForm = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 phoneNumberForm = r'^[1][3,4,5,7,8][0-9]{9}$'
 timeForm = r'^(\d{4})-(0\d{1}|1[0-2])-(0\d{1}|[12]\d{1}|3[01])\s+(0\d{1}|1\d{1}|2[0-3]):([0-5]\d{1})$'
@@ -278,7 +277,7 @@ def getInterviewerURL(request):
         if str(interviewer.id) == interviewerId:
             roomId = interviewer.interview.id
             break
-    url = 'http://' + ALLOWED_HOSTS[0] + ':8000/ink/interviewerManage?room=' + \
+    url = 'https://' + URL + '/ink/interviewerManage?room=' + \
          getEncodedRoomID(roomId)
     return HttpResponse(url)
 
@@ -292,7 +291,7 @@ def getCandidateURL(request):
         if str(candidate.id) == candidateId:
             roomId = candidate.interview.id
             break
-    url = 'http://' + ALLOWED_HOSTS[0] + ':3000/candidate?room=' + \
+    url = 'http://' + ALLOWED_HOSTS[1] + ':3000/candidate?room=' + \
          getEncodedRoomID(roomId) + "&id=" + candidateId
     return HttpResponse(url)
 

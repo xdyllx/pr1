@@ -3,3 +3,4 @@
 *.pyc
 .coverage
 db.sqlite3
+static/media/logo
