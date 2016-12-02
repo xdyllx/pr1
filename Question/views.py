@@ -13,7 +13,8 @@ from django.conf import settings
 import time
 import re
 import os
-
+import sys
+reload(sys)
 
 TEMPLATE_DIR = BASE_DIR + "/templates/"
 FILE_DIR = BASE_DIR + "/static/media/file/"
@@ -83,7 +84,7 @@ class APIError(Exception):
     def __init__(self, APIType, message=u""):
         self.errorInfo = APIType
         if message != u"":
-            self.errorInfo += " ：" + message
+            self.errorInfo += ":" + message
 
 
 # 网址中房间号参数非法
@@ -590,11 +591,11 @@ def innerAddCompletion(title, stem, answer, roomId):
             raise Error(ADD, COMPLETION, NO_SUCH_ROOM_ID)
         if checkReduplicativeTitleInAdd('completion', title):
             raise Error(ADD, COMPLETION, REDUPLICATIVE_TITLE)
-        import re
         zhPattern = re.compile(u'[\u3010][\u3011]')
         contents = stem
         match = zhPattern.search(contents)
         if not match and (not('[]' in stem)):
+#        if (not('【】'.decode('utf-8') in stem)) and (not('[]' in stem)):
             raise Error(ADD, COMPLETION, NO_BLANKS)
         if len(title) >= TITLE_MAXLENGTH:
             raise Error(ADD, COMPLETION, TITLE_OVERFLOW)
@@ -864,11 +865,11 @@ def innerEditCompletion(title, stem, answer, editId, roomId):
             raise Error(EDIT, COMPLETION, NO_SUCH_ROOM_ID)
         if checkReduplicativeTitleInEdit('completion', title, theId):
             raise Error(EDIT, COMPLETION, REDUPLICATIVE_TITLE)
-        import re
         zhPattern = re.compile(u'[\u3010][\u3011]')
         contents = stem
         match = zhPattern.search(contents)
         if not match and (not('[]' in stem)):
+    #if (not('【】'.decode('utf-8') in stem)) and (not('[]' in stem)):
             raise Error(EDIT, COMPLETION, NO_BLANKS)
         if len(title) >= TITLE_MAXLENGTH:
             raise Error(EDIT, COMPLETION, TITLE_OVERFLOW)
@@ -1210,7 +1211,6 @@ def getCodeById(request):
 
 # 读（大）文件，返回文件内容
 def readFile(filename, buf_size=8192):
-    # 有改动！
     if not os.path.exists(filename):
         return
     with open(filename, "rb") as f:
@@ -1227,11 +1227,10 @@ def readFile(filename, buf_size=8192):
 def fileUpload(request):
     files = request.FILES.get('upload_file')  # 得到文件对象
     pattern = re.compile(r'.jpg|.png|.jpeg|.CR2|.bmp|.gif', re.I)
-    #有改动！！
     if (files is None) or (len(re.findall(pattern, files.name)) == 0):  # 非图片格式
         upload_info = {
             "success": False,
-            'file_path': "illegal_filepath"}
+            'file_path': settings.MEDIA_URL + files.name}
         return HttpResponse(upload_info, content_type="application/json")
     else:
         fileDir = settings.MEDIA_ROOT
@@ -1243,23 +1242,25 @@ def fileUpload(request):
         open(filePath, 'wb+').write(files.read())  # 上传文件
         upload_info = {
             "success": True,
-            'file_path': "/home/locke/ink/pr1/static/media/richTextImg/" + filename}
+            'file_path': settings.MEDIA_URL + "richTextImg/" + filename}
         upload_info = json.dumps(upload_info)  # 得到JSON格式的返回值
     return HttpResponse(upload_info, content_type="application/json")
 
 
 # 面试结束后，面试房间传给我们候选人的面试状态（1：通过，2：未通过）
+
 def getStatusAfterInterview(request):
-    cs =Candidate.objects.all()
+    candidateId = int(request.GET['candidate'])
+    status = int(request.GET['status'])
+    cs = Candidate.objects.all()
     for item in cs:
-        if item.id == int(request.GET['candidate']):
-            item.state = int(request.GET['status'])
+        if item.id == candidateId:
+            item.state = status
             item.save()
-
-    return HttpResponse("success")
-
+    return HttpResponse('success')
 
 # 面试结束后，面试房间传给我们候选人5个面试文件的路径
+
 def getFilepathAfterInterview(request):
     candidateId = int(request.GET['candidate'])
     cs = Candidate.objects.all()
@@ -1272,15 +1273,15 @@ def getFilepathAfterInterview(request):
             item.chatpath = request.GET['chatpath']
             item.save()
 
-    return HttpResponse("success")
-
+    return HttpResponse('success')
 
 def checkVideoFilepath(request):
     candidateId = int(request.GET['intervieweeId'])
     dict = {}
     candidate = Candidate.objects.filter(id=candidateId)
-    status = candidate[0].state
-    if status != 0:
+    filepath = candidate[0].videopath
+
+    if os.path.exists(filepath):
         dict['status'] = "success"
         dict['message'] = u"面试视频已生成！"
     else:
@@ -1304,8 +1305,9 @@ def checkReportFilepath(request):
     candidateId = int(request.GET['intervieweeId'])
     dict = {}
     candidate = Candidate.objects.filter(id=candidateId)
-    status = candidate[0].state
-    if status != 0:
+    filepath = candidate[0].reportpath
+
+    if os.path.exists(filepath):
         dict['status'] = "success"
         dict['message'] = u"面试报告已生成！"
     else:
@@ -1329,8 +1331,8 @@ def checkFinalcodeFilepath(request):
     candidateId = int(request.GET['intervieweeId'])
     dict = {}
     candidate = Candidate.objects.filter(id=candidateId)
-    status = candidate[0].state
-    if status != 0:
+    filepath = candidate[0].reportpath
+    if os.path.exists(filepath):
         dict['status'] = "success"
         dict['message'] = u"代码记录已生成！"
     else:
@@ -1343,7 +1345,7 @@ def downloadFinalcode(request):
     candidateId = int(request.GET['intervieweeId'])
     candidate = Candidate.objects.filter(id=candidateId)
     filepath = candidate[0].codepath
-    filename = "final_code.txt"
+    filename = "final_code.html"
     data = readFile(filepath)
     response = HttpResponse(data)
     response['Content-Disposition'] = 'attachment; filename=%s' % (filename)
@@ -1354,8 +1356,8 @@ def checkWhiteboardFilepath(request):
     candidateId = int(request.GET['intervieweeId'])
     dict = {}
     candidate = Candidate.objects.filter(id=candidateId)
-    status = candidate[0].state
-    if status != 0:
+    filepath = candidate[0].reportpath
+    if os.path.exists(filepath):
         dict['status'] = "success"
         dict['message'] = u"白板记录已生成！"
     else:
@@ -1386,7 +1388,10 @@ def checkChatFilepath(request):
     else:
         dict['status'] = "fail"
         dict['message'] = u"聊天记录尚未生成！"
+    print candidateId
+    print candidate[0].chatpath
     return HttpResponse(json.dumps(dict), content_type="application/json")
+
 
 
 def downloadChat(request):
@@ -1396,6 +1401,6 @@ def downloadChat(request):
     filename = "chat_record.txt"
     data = readFile(filepath)
     response = HttpResponse(data)
-    response['Content-Disposition'] = 'attachment; filename=%s' % (filename)
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
 
