@@ -34,6 +34,8 @@ class TestTestCase(TestCase):
             state=NOT_START)
         User.objects.create(username='1@qq.com', password='123456789')
 
+
+
     def test_inner_create_room(self):
         name1 = ''
         name2 = 'software project'
@@ -371,3 +373,74 @@ class TestTestCase(TestCase):
         rooms = Interview.objects.all()
         roomId = rooms[0].id
         self.assertEqual(getEncodedRoomID(roomId), "283202752_" + str(roomId))
+
+
+    # Add in Dec. 2nd
+    def test_get_HR_manage_render(self):
+        HRManageRender = getHRManageRender()
+        self.assertEqual((u"HR管理房间" in HRManageRender), True)
+
+    def test_get_room_manage_render(self):
+        roomManageRender = getRoomManageRender()
+        self.assertEqual((u"房间信息" in roomManageRender), True)
+
+    def test_get_candidate_manage_render(self):
+        candidateManageRender = getCandidateManageRender()
+        self.assertEqual((u"候选人" in candidateManageRender), True)
+
+    def test_login(self):
+        response1 = self.client.post("/ink/login/", {'username': '', 'password': '123456789'})
+        response2 = self.client.post("/ink/login/", {'username': '1@qq.com', 'password': '12345'})
+        response3 = self.client.post("/ink/login/", {'username': '1@qq.com', 'password': '123456789'})
+
+        self.assertEqual(response1.status_code, 200)
+        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response3.status_code, 302)
+
+    def test_register(self):
+        response1 = self.client.post("/ink/register/",
+                                     {'name': 'victor', 'email': '123456789@qq.com',
+                                      'company': 'jisuanke', 'password': 'abcdefg',
+                                      'passwordConfirm': 'abcdefg', 'verificationNum': '6',
+                                      'verificationInput': '6'})
+        self.assertEqual(response1.status_code, 200)
+
+    def test_download_example_excel(self):
+        response1 = self.client.post("/ink/downloadExampleExcel/", {'username': '', 'password': '123456789'})
+        self.assertEqual(response1.status_code, 200)
+
+
+
+
+
+
+
+     # response1 = self.client.post('/ink/getCandidate/?room=' + getEncodedRoomID(roomId))
+     #    self.assertEqual(response1.status_code, 200)
+
+    # def test_add_activity_group_user_name_error(self):
+    #     client = Client()
+    #     dic = {
+    #         'activity_group_name': 'software engineering',
+    #         'admin_user': [
+    #             'lizeyan',
+    #             '1231'
+    #         ],
+    #         'normal_user': [
+    #             'sunweijun',
+    #             '122222'
+    #         ]
+    #     }
+    #     self.assertTrue(client.login(
+    #         username='lvxin',
+    #         password='123456'
+    #     ))
+    #     answer = client.post(
+    #         '/activity_group/',
+    #         json.dumps(dic),
+    #         content_type='application/json',
+    #     )
+    #     answer_json = json.loads(answer.content.decode())
+    #     self.assertEqual(answer.status_code, 201)
+    #     self.assertEqual(answer_json['status'], 'CREATE_SUCCESS_SOME_ADD_FAILED')
+    #     self.assertEqual(answer_json['suggestion'], '创建成功，但是某些成员添加失败')

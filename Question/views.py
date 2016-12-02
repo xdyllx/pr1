@@ -865,11 +865,11 @@ def innerEditCompletion(title, stem, answer, editId, roomId):
             raise Error(EDIT, COMPLETION, NO_SUCH_ROOM_ID)
         if checkReduplicativeTitleInEdit('completion', title, theId):
             raise Error(EDIT, COMPLETION, REDUPLICATIVE_TITLE)
-        zhPattern = re.compile(u'[\u3010][\u3011]')
+	zhPattern = re.compile(u'[\u3010][\u3011]')
         contents = stem
         match = zhPattern.search(contents)
         if not match and (not('[]' in stem)):
-    #if (not('【】'.decode('utf-8') in stem)) and (not('[]' in stem)):
+	#if (not('【】'.decode('utf-8') in stem)) and (not('[]' in stem)):
             raise Error(EDIT, COMPLETION, NO_BLANKS)
         if len(title) >= TITLE_MAXLENGTH:
             raise Error(EDIT, COMPLETION, TITLE_OVERFLOW)
@@ -1230,7 +1230,7 @@ def fileUpload(request):
     if (files is None) or (len(re.findall(pattern, files.name)) == 0):  # 非图片格式
         upload_info = {
             "success": False,
-            'file_path': settings.MEDIA_URL + files.name}
+            'file_path': 'illegal_file_path'}
         return HttpResponse(upload_info, content_type="application/json")
     else:
         fileDir = settings.MEDIA_ROOT
@@ -1242,7 +1242,7 @@ def fileUpload(request):
         open(filePath, 'wb+').write(files.read())  # 上传文件
         upload_info = {
             "success": True,
-            'file_path': settings.MEDIA_URL + "richTextImg/" + filename}
+            'file_path': "/home/locke/ink/pr1/static/media/richTextImg/" + filename}
         upload_info = json.dumps(upload_info)  # 得到JSON格式的返回值
     return HttpResponse(upload_info, content_type="application/json")
 
@@ -1401,6 +1401,6 @@ def downloadChat(request):
     filename = "chat_record.txt"
     data = readFile(filepath)
     response = HttpResponse(data)
-    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+    response['Content-Disposition'] = 'attachment; filename=%s' % (filename)
     return response
 
