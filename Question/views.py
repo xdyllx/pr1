@@ -158,6 +158,25 @@ def getOptionsInJsend(op):
     return options
 
 
+# 【API】富文本中<img src=...>相对路径转绝对路径
+def convRelativePathtoDirectPath(stem):
+    pattern = re.compile(r'<img.*?src=.*?>')
+    res = re.findall(pattern, stem)
+    ans = stem
+    final = ""
+    for i in range(0, len(res)):
+        ans = ans.split(res[i])
+        final += ans[0]
+        ans = ans[1]
+        pos = res[i].find('/static/')
+        res1 = res[i][0:pos]
+        res3 = res[i][pos:]
+        res2 = '/home/locke/ink/pr1'
+        final += (res1+res2+res3)
+    final += ans
+    return final
+
+
 # 【API】给面试房间提供的题目Jsend中，选择题
 def getChoiceListInJsend(roomID, mark):
     room = Interview.objects.filter(id=roomID)
@@ -172,7 +191,7 @@ def getChoiceListInJsend(roomID, mark):
         options = getOptionsInJsend(op)
         body['number'] = choice.id
         body['title'] = choice.title
-        body['stem'] = choice.stem
+        body['stem'] = convRelativePathtoDirectPath(choice.stem)
         body['options'] = options
         body['answer'] = choice.answer
         context['id'] = _mark
@@ -194,7 +213,7 @@ def getCompletionListInJsend(roomID, mark):
         body = {}
         body['number'] = completion.id
         body['title'] = completion.title
-        body['stem'] = completion.stem
+        body['stem'] = convRelativePathtoDirectPath(completion.stem)
         body['answer'] = completion.answer
         context['id'] = _mark
         _mark += 1
@@ -215,7 +234,7 @@ def getEssayListInJsend(roomID, mark):
         body = {}
         body['number'] = essay.id
         body['title'] = essay.title
-        body['stem'] = essay.stem
+        body['stem'] = convRelativePathtoDirectPath(essay.stem)
         body['answer'] = essay.answer
         context['id'] = _mark
         _mark += 1
@@ -236,7 +255,7 @@ def getCodeListInJsend(roomID, mark):
         body = {}
         body['number'] = code.id
         body['title'] = code.title
-        body['stem'] = code.stem
+        body['stem'] = convRelativePathtoDirectPath(code.stem)
         body['sampleInput'] = code.sampleInput
         body['sampleOutput'] = code.sampleOutput
         context['id'] = _mark
@@ -865,11 +884,11 @@ def innerEditCompletion(title, stem, answer, editId, roomId):
             raise Error(EDIT, COMPLETION, NO_SUCH_ROOM_ID)
         if checkReduplicativeTitleInEdit('completion', title, theId):
             raise Error(EDIT, COMPLETION, REDUPLICATIVE_TITLE)
-	zhPattern = re.compile(u'[\u3010][\u3011]')
+        zhPattern = re.compile(u'[\u3010][\u3011]')
         contents = stem
         match = zhPattern.search(contents)
         if not match and (not('[]' in stem)):
-	#if (not('【】'.decode('utf-8') in stem)) and (not('[]' in stem)):
+        #if (not('【】'.decode('utf-8') in stem)) and (not('[]' in stem)):
             raise Error(EDIT, COMPLETION, NO_BLANKS)
         if len(title) >= TITLE_MAXLENGTH:
             raise Error(EDIT, COMPLETION, TITLE_OVERFLOW)
@@ -1242,7 +1261,7 @@ def fileUpload(request):
         open(filePath, 'wb+').write(files.read())  # 上传文件
         upload_info = {
             "success": True,
-            'file_path': "/home/locke/ink/pr1/static/media/richTextImg/" + filename}
+            'file_path': settings.MEDIA_URL + "richTextImg/" + filename}
         upload_info = json.dumps(upload_info)  # 得到JSON格式的返回值
     return HttpResponse(upload_info, content_type="application/json")
 
@@ -1388,8 +1407,6 @@ def checkChatFilepath(request):
     else:
         dict['status'] = "fail"
         dict['message'] = u"聊天记录尚未生成！"
-    print candidateId
-    print candidate[0].chatpath
     return HttpResponse(json.dumps(dict), content_type="application/json")
 
 
