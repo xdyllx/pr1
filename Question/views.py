@@ -1366,7 +1366,7 @@ def downloadFinalcode(request):
     candidateId = int(request.GET['intervieweeId'])
     candidate = Candidate.objects.filter(id=candidateId)
     filepath = candidate[0].codepath
-    filename = "final_code.html"
+    filename = "code.html"
     data = readFile(filepath)
     response = HttpResponse(data)
     response['Content-Disposition'] = 'attachment; filename=%s' % (filename)
