@@ -39,7 +39,7 @@ $(document).ready(function() {
     });
     //点击进入房间按钮
     $("#enterRoom").click(function () {
-        window.open("http://tttest5801.cloudapp.net/interviewer?room="+$("#roomId").val());
+        window.open("http://tttest5801.cloudapp.net:3000/interviewer?room="+$("#roomId").val());
     })
 });
 
