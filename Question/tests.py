@@ -1563,10 +1563,9 @@ class SmallFunctionsTestCase(TestCase):
         self.assertEqual(response1.status_code, 200)
 
     def test_conv_relativepath_to_directpath(self):
-        stem = "Start<img src='/static/media/1.png'>......<img src='/static/media/2.jpg'>End"
+        stem = "Start<img src='/static/media/1.png'>......<img src='/static/media/2.jpg' width=50px>End"
         ans = convRelativePathtoDirectPath(stem)
-        self.assertEqual(ans, "Start<img src='/home/locke/ink/pr1/static/media/1.png'>......<img src='/home/locke/ink/pr1/static/media/2.jpg'>End")
-
+        self.assertEqual(ans, "Start<img src='media/1.png'>......<img src='media/2.jpg' width=50px>End")
 
 
 

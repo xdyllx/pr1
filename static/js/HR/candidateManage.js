@@ -223,7 +223,8 @@ $(document).ready(function() {
             if (ret.status == 'success') {
                 initToastr();
                 var $toast = toastr['success']('发送成功');
-                $("#sendEmailToCandidateModal").hide();
+                $("#rightPanel").html(ret.pageText);
+                //$("#sendEmailToCandidateModal").hide();
                 $("div.modal-backdrop").remove();
                 $("div.loading").addClass('hidden');
             }

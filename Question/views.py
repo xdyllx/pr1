@@ -170,11 +170,13 @@ def convRelativePathtoDirectPath(stem):
         ans = ans[1]
         pos = res[i].find('/static/')
         res1 = res[i][0:pos]
-        res3 = res[i][pos:]
-        res2 = '/home/locke/ink/pr1'
-        final += (res1+res2+res3)
+        res3 = res[i][pos+8:]
+        # res2 = '/home/locke/ink/pr1'
+        # final += (res1+res2+res3)
+        final += (res1 + res3)
     final += ans
     return final
+
 
 
 # 【API】给面试房间提供的题目Jsend中，选择题
